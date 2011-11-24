@@ -46,7 +46,7 @@ module Buscape
       url = "http://#{@env}.buscape.com/service/#{@uris[method]}/#{@application_id}/"
 
       @data.each { |sym, value|
-        url += ((url[-1, 1] == "/") ? "?" : "&") + "#{(@params[sym].blank?) ? sym.to_s : @params[sym]}=#{value}" 
+        url += ((url[-1, 1] == "/") ? "?" : "&") + "#{(@params[sym].empty?) ? sym.to_s : @params[sym]}=#{value}" 
       }
 
       res = self.class.get(url)
