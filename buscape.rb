@@ -22,7 +22,8 @@ class BuscaPe
       :category => "categoryId",
       :product => "productId",
       :top_products => "topProducts",
-      :seller => "sellerId"
+      :seller => "sellerId",
+      :offer => "offerId"
     }
 
     @data = {}
