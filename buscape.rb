@@ -40,7 +40,7 @@ class BuscaPe
   end
   
   def self.fetch_api(method)
-    raise "Method '#{method}' doesn't exist!" if @uris[method].blank?
+    raise "Method '#{method}' doesn't exist!" if @uris[method].empty?
     
     @uris[method] = "viewSellerDetails" if method === :details && !@data[:seller].blank? && @data[:product].blank?
     
