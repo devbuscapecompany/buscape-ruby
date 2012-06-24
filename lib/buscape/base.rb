@@ -1,61 +1,59 @@
-require 'httparty'
-require 'uri'
+module Buscape
+  class Base
+    include HTTParty
 
+    def initialize(application_id, sandbox = false)
+      raise "You need to inform your :application_id" if application_id.nil?
 
-class BuscaPe
-  include HTTParty
-  
-  def initialize(options = {})
-    
-    raise "You need to inform your :application_id" if options[:application_id].nil?
-    
-    @base_uri = "sandbox.buscape.com/service" unless options[:sandbox].nil? || !options[:sandbox]
-    @application_id = options[:application_id];
+      @env = (sandbox) ? 'sandbox' : 'bws'
+        
+      @application_id = application_id;
 
-    @uris = {
-      :categories => "findCategoryList",
-      :products => "findProductList",
-      :ratings => "viewUserRatings",
-      :oferts => "findOfferList",
-      :details => "viewProductDetails"
-    }
+      @uris = {
+        :categories => "findCategoryList",
+        :products => "findProductList",
+        :ratings => "viewUserRatings",
+        :oferts => "findOfferList",
+        :details => "viewProductDetails"
+      }
 
-    @params = {
-      :category => "categoryId",
-      :product => "productId",
-      :top_products => "topProducts",
-      :seller => "sellerId",
-      :offer => "offerId",
-      :keyword => "keyword"
-    }
+      @params = {
+        :category => "categoryId",
+        :product => "productId",
+        :top_products => "topProducts",
+        :seller => "sellerId",
+        :keyword => "keyword"
+      }
 
-    @data = {}
-  end
-  
-  private
-  
-  def self.method_missing(method, *args, &block)
-    if @uris.map {|v, k| v }.include? method
-      self.fetch_api(method)
-    else
-      @data.merge!({method => args[0]})
-      self
+      @data = {}
     end
-  end
-  
-  def self.fetch_api(method)
-    raise "Method '#{method}' doesn't exist!" if @uris[method].empty?
-    
-    @uris[method] = "viewSellerDetails" if method === :details && !@data[:seller].blank? && @data[:product].blank?
-    
-    url = "http://#{@base_uri}/#{@uris[method]}/#{@application_id}/"
 
-    @data.each { |sym, value|
-      url += ((url[-1, 1] == "/") ? "?" : "&") + "#{(@params[sym].blank?) ? sym.to_s : @params[sym]}=#{value}" 
-    }
-    
-    uri = URI(url)
-    
-    self.get(uri.to_s)
+    private
+
+    def method_missing(method, *args, &block)
+      if @uris.map {|v, k| v }.include? method
+        fetch_api(method)
+      else
+        @data.merge!({method => args[0]})
+        self
+      end
+    end
+
+    def fetch_api(method)
+      raise "Method '#{method}' doesn't exist!" if @uris[method].empty?
+
+      @uris[method] = "viewSellerDetails" if method === :details && !@data[:seller].blank? && @data[:product].blank?
+
+      url = "http://#{@env}.buscape.com/service/#{@uris[method]}/#{@application_id}/"
+
+      @data.each { |sym, value|
+        url += ((url[-1, 1] == "/") ? "?" : "&") + "#{(@params[sym].empty?) ? sym.to_s : @params[sym]}=#{value}" 
+      }
+      uri = URI(url)
+
+      res = self.class.get(uri.to_s)
+      
+      res.parsed_response["Result"] unless res.nil?
+    end
   end
 end
