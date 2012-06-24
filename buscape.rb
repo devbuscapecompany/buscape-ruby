@@ -54,8 +54,8 @@ class BuscaPe
       url += ((url[-1, 1] == "/") ? "?" : "&") + "#{(@params[sym].blank?) ? sym.to_s : @params[sym]}=#{value}" 
     }
     
-    uri = URI(url)
+    uri_parser = URI::Parser.new
     
-    self.get(uri.to_s)
+    self.get(uri_parser(url))
   end
 end
