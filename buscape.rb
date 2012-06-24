@@ -1,4 +1,6 @@
 require 'httparty'
+require 'uri'
+
 
 class BuscaPe
   include HTTParty
@@ -52,6 +54,8 @@ class BuscaPe
       url += ((url[-1, 1] == "/") ? "?" : "&") + "#{(@params[sym].blank?) ? sym.to_s : @params[sym]}=#{value}" 
     }
     
-    self.get(url)
+    uri = URI(url)
+    
+    self.get(uri.to_s)
   end
 end
