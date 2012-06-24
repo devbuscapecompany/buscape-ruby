@@ -23,7 +23,8 @@ class BuscaPe
       :product => "productId",
       :top_products => "topProducts",
       :seller => "sellerId",
-      :offer => "offerId"
+      :offer => "offerId",
+      :keyword => "keyword"
     }
 
     @data = {}

@@ -21,7 +21,8 @@ module Buscape
         :category => "categoryId",
         :product => "productId",
         :top_products => "topProducts",
-        :seller => "sellerId"
+        :seller => "sellerId",
+        :keyword => "keyword"
       }
 
       @data = {}
