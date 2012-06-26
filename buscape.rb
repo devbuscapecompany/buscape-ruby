@@ -1,4 +1,6 @@
 require 'httparty'
+require 'uri'
+
 
 class BuscaPe
   include HTTParty
@@ -23,7 +25,8 @@ class BuscaPe
       :product => "productId",
       :top_products => "topProducts",
       :seller => "sellerId",
-      :offer => "offerId"
+      :offer => "offerId",
+      :keyword => "keyword"
     }
 
     @data = {}
@@ -51,6 +54,8 @@ class BuscaPe
       url += ((url[-1, 1] == "/") ? "?" : "&") + "#{(@params[sym].blank?) ? sym.to_s : @params[sym]}=#{value}" 
     }
     
-    self.get(url)
+    uri_parser = URI::Parser.new
+    
+    self.get(uri_parser(url))
   end
 end

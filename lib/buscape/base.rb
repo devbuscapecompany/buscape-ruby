@@ -21,7 +21,8 @@ module Buscape
         :category => "categoryId",
         :product => "productId",
         :top_products => "topProducts",
-        :seller => "sellerId"
+        :seller => "sellerId",
+        :keyword => "keyword"
       }
 
       @data = {}
@@ -48,8 +49,10 @@ module Buscape
       @data.each { |sym, value|
         url += ((url[-1, 1] == "/") ? "?" : "&") + "#{(@params[sym].empty?) ? sym.to_s : @params[sym]}=#{value}" 
       }
+      
+      uri_parser = URI::Parser.new
 
-      res = self.class.get(url)
+      res = self.class.get(uri_parser.escape(url))
       
       res.parsed_response["Result"] unless res.nil?
     end
