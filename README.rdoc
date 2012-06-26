@@ -20,7 +20,11 @@ Then you can use like this:
 
   b.category(77).products
 
-This get all products in the cellphone category.
+This get all products in the cellphone category. Or like this:
+
+	b.keyword("Apple").products
+
+This get all products using the keyword "Apple"
 
 Easy, huh? :P
 
