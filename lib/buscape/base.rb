@@ -2,12 +2,15 @@ module Buscape
   class Base
     include HTTParty
 
-    def initialize(application_id, sandbox = false)
+    def initialize(application_id, source_id, sandbox = false)
       raise "You need to inform your :application_id" if application_id.nil?
+      raise "You need to inform your :source_id" if source_id.nil?
 
       @env = (sandbox) ? 'sandbox' : 'bws'
         
       @application_id = application_id;
+
+      @source_id = source_id
 
       @uris = {
         :categories => "findCategoryList",
@@ -49,6 +52,8 @@ module Buscape
       @data.each { |sym, value|
         url += ((url[-1, 1] == "/") ? "?" : "&") + "#{(@params[sym].empty?) ? sym.to_s : @params[sym]}=#{value}" 
       }
+
+      url += "&sourceId=#{@source_id}"
       
       uri_parser = URI::Parser.new
 
