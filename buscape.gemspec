@@ -19,4 +19,6 @@ Gem::Specification.new do |s|
   s.require_paths = ["lib"]
   
   s.add_dependency("httparty", ">= 0.7.7")
+  s.add_development_dependency("awesome_print")
+  s.add_development_dependency("wirble")
 end
