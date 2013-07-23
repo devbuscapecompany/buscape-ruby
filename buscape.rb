@@ -1,16 +1,19 @@
+=begin
 require 'httparty'
 require 'uri'
 
-
-class BuscaPe
+class Buscape
   include HTTParty
+
+  VERSION=1
   
-  def initialize(options = {})
+  def initialize(application_id, sandbox = false, options = {})
     
-    raise "You need to inform your :application_id" if options[:application_id].nil?
-    
-    @base_uri = "sandbox.buscape.com/service" unless options[:sandbox].nil? || !options[:sandbox]
-    @application_id = options[:application_id];
+    raise "You need to inform your :application_id" if application_id.nil?
+
+    @env = (sandbox) ? 'sandbox' : 'bws'
+
+    @application_id = application_id;
 
     @uris = {
       :categories => "findCategoryList",
@@ -26,7 +29,8 @@ class BuscaPe
       :top_products => "topProducts",
       :seller => "sellerId",
       :offer => "offerId",
-      :keyword => "keyword"
+      :keyword => "keyword",
+      :source_id => "sourceID"
     }
 
     @data = {}
@@ -59,3 +63,4 @@ class BuscaPe
     self.get(uri_parser(url))
   end
 end
+=end
