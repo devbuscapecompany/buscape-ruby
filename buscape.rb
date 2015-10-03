@@ -5,13 +5,16 @@ require 'uri'
 class BuscaPe
   include HTTParty
   
-  def initialize(options = {})
+  def initialize(application_id, sandbox = false, country = "BR")
     
-    raise "You need to inform your :application_id" if options[:application_id].nil?
+    raise "You need to inform your :application_id" if application_id.nil?
     
-    @base_uri = "sandbox.buscape.com/service" unless options[:sandbox].nil? || !options[:sandbox]
-    @application_id = options[:application_id];
-
+    #@base_uri = "sandbox.buscape.com/service" unless options[:sandbox].nil? || !options[:sandbox]
+    @env = (sandbox) ? 'sandbox' : 'bws'
+    @application_id =application_id;
+    @country = country
+    
+    
     @uris = {
       :categories => "findCategoryList",
       :products => "findProductList",
@@ -36,10 +39,11 @@ class BuscaPe
   
   def self.method_missing(method, *args, &block)
     if @uris.map {|v, k| v }.include? method
-      self.fetch_api(method)
+        @data.merge!(args[0])
+        fetch_api(method)
     else
-      @data.merge!({method => args[0]})
-      self
+        @data.merge!({method => args[0]})
+        self
     end
   end
   
@@ -48,7 +52,8 @@ class BuscaPe
     
     @uris[method] = "viewSellerDetails" if method === :details && !@data[:seller].blank? && @data[:product].blank?
     
-    url = "http://#{@base_uri}/#{@uris[method]}/#{@application_id}/"
+    #url = "http://#{@base_uri}/#{@uris[method]}/#{@application_id}/"
+    url = "http://#{@env}.buscape.com/service/#{@uris[method]}/lomadee/#{@application_id}/#{@country}/"
 
     @data.each { |sym, value|
       url += ((url[-1, 1] == "/") ? "?" : "&") + "#{(@params[sym].blank?) ? sym.to_s : @params[sym]}=#{value}" 
@@ -56,6 +61,8 @@ class BuscaPe
     
     uri_parser = URI::Parser.new
     
-    self.get(uri_parser(url))
+    response = self.class.get(uri_parser.escape(url))
+
+    response.parsed_response["Result"] unless res.nil?
   end
 end
