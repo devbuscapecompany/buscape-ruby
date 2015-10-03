@@ -9,7 +9,8 @@ class BuscaPe
     
     raise "You need to inform your :application_id" if options[:application_id].nil?
     
-    @base_uri = "sandbox.buscape.com/service" unless options[:sandbox].nil? || !options[:sandbox]
+    #@base_uri = "sandbox.buscape.com/service" unless options[:sandbox].nil? || !options[:sandbox]
+    @env = (sandbox) ? 'sandbox' : 'bws'
     @application_id = options[:application_id];
 
     @uris = {
@@ -48,7 +49,8 @@ class BuscaPe
     
     @uris[method] = "viewSellerDetails" if method === :details && !@data[:seller].blank? && @data[:product].blank?
     
-    url = "http://#{@base_uri}/#{@uris[method]}/#{@application_id}/"
+    #url = "http://#{@base_uri}/#{@uris[method]}/#{@application_id}/"
+    url = "http://#{@env}.buscape.com/service/#{@uris[method]}/lomadee/#{@application_id}/"
 
     @data.each { |sym, value|
       url += ((url[-1, 1] == "/") ? "?" : "&") + "#{(@params[sym].blank?) ? sym.to_s : @params[sym]}=#{value}" 
